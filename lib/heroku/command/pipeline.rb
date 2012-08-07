@@ -48,7 +48,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
     end
 
     print_and_flush("Promoting #{upstream_app} to #{downstream_app}...")
-    RestClient.post "http://:#{api_key}@#{host}/apps/#{upstream_app}/promote", "DOWNSTREAM_APP=#{downstream_app}&cloud=heroku.com", headers
+    RestClient.post "http://:#{api_key}@#{host}/apps/#{upstream_app}/promote/#{downstream_app}", "cloud=heroku.com", headers
     print_and_flush("done\n")
   end
 
