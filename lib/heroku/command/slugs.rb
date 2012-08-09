@@ -14,7 +14,7 @@ class Heroku::Command::Slugs < Heroku::Command::Base
   # copy an app slug to app to another app
   #
   def cp
-    raise Heroku::Command::CommandFailed, "Invalid arguments. Syntax: heroku slugs:cp source_app target_app" if args.length != 2
+    raise Heroku::Command::CommandFailed, "Invalid arguments. Usage: heroku slugs:cp source_app target_app" if args.length != 2
 
     source_app = shift_argument
     target_app = shift_argument
@@ -28,7 +28,7 @@ class Heroku::Command::Slugs < Heroku::Command::Base
     end
 
     print_and_flush("Copying slug from #{source_app} to #{target_app}...")
-    response = RestClient.post "http://:#{Heroku::Auth.api_key}@#{DEFAULT_HOST}/apps/#{source_app}/promote/#{target_app}", "cloud=heroku.com", headers
+    response = RestClient.post "http://:#{Heroku::Auth.api_key}@#{DEFAULT_HOST}/apps/#{source_app}/copy/#{target_app}", "cloud=heroku.com", headers
     print_and_flush("done, #{json_decode(response)['release']}\n")
   end
 
