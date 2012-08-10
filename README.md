@@ -4,7 +4,7 @@ An experimental Heroku CLI plugin for continuous delivery primatives.
 
 Installation
 ------------
-    $ heroku plugins:install https://github.com/heroku/heorku-pipeline
+    $ heroku plugins:install https://github.com/heroku/heroku-pipeline
 
 Setup
 -----
