@@ -3,41 +3,58 @@ require 'heroku/api/config_vars'
 require 'rest_client'
 require 'net/http'
 
-# deploy to an app
+# Continuous delivery pipeline actions
 #
 class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
-  VERSION = "0.1"
-  DEFAULT_HOST = "release-promotion.herokuapp.com"
+  VERSION = "0.2-PRE-ALPHA"
+  DOWNSTREAM_APP = "DOWNSTREAM_APP"
 
   # pipeline
   #
-  # deploy to an app
+  # get info about downstream
   #
   def index
-    display "TODO"
+    downstream_app = get_downstream_app
+    verify_config! downstream_app
+    display "Downstream app: #{downstream_app}"
+  end
+
+  # pipeline:add downstream_app
+  #
+  # add a downstream_app to this app
+  #
+  def add
+    curr_downstream_app = get_downstream_app
+    raise Heroku::Command::CommandFailed, "Downstream app already configured: #{curr_downstream_app}" if curr_downstream_app
+
+    downstream_app = shift_argument
+    verify_config! downstream_app
+
+    heroku.add_config_vars(app, {DOWNSTREAM_APP => downstream_app})
+    display "Added downstream app: #{downstream_app}"
+  end
+
+  # pipeline:remove downstream_app
+  #
+  # remove the downstream_app of this app
+  #
+  def remove
+    downstream_app = get_downstream_app
+    verify_config! downstream_app
+
+    heroku.remove_config_var(app, DOWNSTREAM_APP)
+    display "Removed downstream app: #{downstream_app}"
   end
 
   # pipeline:promote
   #
-  # promote an app slug to downstream app
-  #
-  # -d, --downstream DOWNSTREAM_APP  # target app
+  # promote this app slug to its downstream app
   #
   def promote
-    host = DEFAULT_HOST
-
     upstream_app = app
 
-    downstream_app = options[:downstream]
-    if downstream_app.nil?
-      config_vars = heroku.config_vars(app)
-      if config_vars.has_key? "DOWNSTREAM_APP"
-        downstream_app = config_vars["DOWNSTREAM_APP"]
-      end
-    end
-    if downstream_app.nil?
-      raise Heroku::Command::CommandFailed, "downstream app could not be determined"
-    end
+    downstream_app = get_downstream_app
+    verify_config! downstream_app
 
     [upstream_app, downstream_app].each do |a|
       begin
@@ -48,13 +65,24 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
     end
 
     print_and_flush("Promoting #{upstream_app} to #{downstream_app}...")
-    RestClient.post "http://:#{api_key}@#{host}/apps/#{upstream_app}/promote/#{downstream_app}", "cloud=heroku.com", headers
+    RestClient.post "http://:#{api_key}@release-promotion.herokuapp.com/apps/#{upstream_app}/copy/#{downstream_app}", "cloud=heroku.com", headers
     print_and_flush("done\n")
   end
 
   protected
   def api_key
     Heroku::Auth.api_key
+  end
+
+  def get_downstream_app
+    config_vars = heroku.config_vars(app)
+    if config_vars.has_key? DOWNSTREAM_APP
+      config_vars[DOWNSTREAM_APP]
+    end
+  end
+
+  def verify_config!(downstream_app)
+    raise Heroku::Command::CommandFailed, "Downstream app not specified. Use `heroku pipeline:add DOWNSTREAM_APP` to add one." if downstream_app.nil?
   end
 
   def headers
