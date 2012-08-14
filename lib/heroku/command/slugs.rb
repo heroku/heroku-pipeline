@@ -6,8 +6,7 @@ require 'net/http'
 # advanced slug operations
 #
 class Heroku::Command::Slugs < Heroku::Command::Base
-  VERSION = "0.1"
-  DEFAULT_HOST = "release-promotion.herokuapp.com"
+  VERSION = "0.1-PRE-ALPHA"
 
   # slugs:cp source_app target_app
   #
@@ -28,7 +27,7 @@ class Heroku::Command::Slugs < Heroku::Command::Base
     end
 
     print_and_flush("Copying slug from #{source_app} to #{target_app}...")
-    response = RestClient.post "http://:#{Heroku::Auth.api_key}@#{DEFAULT_HOST}/apps/#{source_app}/copy/#{target_app}", "cloud=heroku.com", headers
+    response = RestClient.post "http://:#{Heroku::Auth.api_key}@release-promotion.herokuapp.com/apps/#{source_app}/copy/#{target_app}", "cloud=heroku.com", headers
     print_and_flush("done, #{json_decode(response)['release']}\n")
   end
 
