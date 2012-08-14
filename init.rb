@@ -1,2 +1,2 @@
 require "heroku/command/pipeline"
-require "heroku/command/slugs"
+require "heroku/command/slug"

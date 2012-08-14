@@ -5,15 +5,15 @@ require 'net/http'
 
 # advanced slug operations
 #
-class Heroku::Command::Slugs < Heroku::Command::Base
-  VERSION = "0.1-PRE-ALPHA"
+class Heroku::Command::Slug < Heroku::Command::Base
+  VERSION = "0.2-PRE-ALPHA"
 
-  # slugs:cp source_app target_app
+  # slug:cp SOURCE_APP TARGET_APP
   #
   # copy an app slug to app to another app
   #
   def cp
-    raise Heroku::Command::CommandFailed, "Invalid arguments. Usage: heroku slugs:cp source_app target_app" if args.length != 2
+    raise Heroku::Command::CommandFailed, "Invalid arguments. Usage: heroku slugs:cp SOURCE_APP TARGET_APP" if args.length != 2
 
     source_app = shift_argument
     target_app = shift_argument
