@@ -65,9 +65,15 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
     end
 
     print_and_flush("Promoting #{upstream_app} to #{downstream_app}...")
-    response = RestClient.post "http://:#{Heroku::Auth.api_key}@release-promotion.herokuapp.com/apps/#{upstream_app}/copy/#{downstream_app}", { "cloud" => "heroku.com" }, headers
+    url = "https://:#{Heroku::Auth.api_key}@release-promotion.herokuapp.com/apps/#{upstream_app}/copy/#{downstream_app}"
+    body = {
+        "cloud" => "heroku.com",
+        "command" => "pipeline:promote"
+    }
+    response = RestClient.post url, body, headers
     print_and_flush("done, #{json_decode(response)['release']}\n")
   end
+
 
   protected
 
@@ -79,7 +85,9 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
   end
 
   def verify_config!(downstream_app)
-    raise Heroku::Command::CommandFailed, "Downstream app not specified. Use `heroku pipeline:add DOWNSTREAM_APP` to add one." if downstream_app.nil?
+    if downstream_app.nil?
+      raise Heroku::Command::CommandFailed, "Downstream app not specified. Use `heroku pipeline:add DOWNSTREAM_APP` to add one."
+    end
   end
 
   def headers

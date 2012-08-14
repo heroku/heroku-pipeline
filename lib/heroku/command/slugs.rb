@@ -27,7 +27,12 @@ class Heroku::Command::Slugs < Heroku::Command::Base
     end
 
     print_and_flush("Copying slug from #{source_app} to #{target_app}...")
-    response = RestClient.post "http://:#{Heroku::Auth.api_key}@release-promotion.herokuapp.com/apps/#{source_app}/copy/#{target_app}", "cloud=heroku.com", headers
+    url = "http://:#{Heroku::Auth.api_key}@release-promotion.herokuapp.com/apps/#{source_app}/copy/#{target_app}"
+    body = {
+        "cloud" => "heroku.com",
+        "command" => "slugs:cp"
+    }
+    response = RestClient.post url, body, headers
     print_and_flush("done, #{json_decode(response)['release']}\n")
   end
 
