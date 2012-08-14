@@ -65,8 +65,8 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
     end
 
     print_and_flush("Promoting #{upstream_app} to #{downstream_app}...")
-    RestClient.post "http://:#{Heroku::Auth.api_key}@release-promotion.herokuapp.com/apps/#{upstream_app}/copy/#{downstream_app}", "cloud=heroku.com", headers
-    print_and_flush("done\n")
+    response = RestClient.post "http://:#{Heroku::Auth.api_key}@release-promotion.herokuapp.com/apps/#{upstream_app}/copy/#{downstream_app}", { "cloud" => "heroku.com" }, headers
+    print_and_flush("done, #{json_decode(response)['release']}\n")
   end
 
   protected
