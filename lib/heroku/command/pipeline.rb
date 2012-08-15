@@ -78,8 +78,14 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
         "cloud" => "heroku.com",
         "command" => "pipeline:promote"
     }
-    response = RestClient.post url, body, headers
-    print_and_flush("done, #{json_decode(response)['release']}\n")
+
+    begin
+      response = RestClient.post url, body, headers
+      print_and_flush("done, #{json_decode(response)['release']}\n")
+    rescue RestClient::Forbidden => e
+      display
+      raise Heroku::Command::CommandFailed, e.response
+    end
   end
 
   protected

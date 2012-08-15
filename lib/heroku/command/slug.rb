@@ -32,8 +32,13 @@ class Heroku::Command::Slug < Heroku::Command::Base
         "cloud" => "heroku.com",
         "command" => "slugs:cp"
     }
-    response = RestClient.post url, body, headers
-    print_and_flush("done, #{json_decode(response)['release']}\n")
+    begin
+      response = RestClient.post url, body, headers
+      print_and_flush("done, #{json_decode(response)['release']}\n")
+    rescue RestClient::Forbidden => e
+      display
+      raise Heroku::Command::CommandFailed, e.response
+    end
   end
 
   protected
