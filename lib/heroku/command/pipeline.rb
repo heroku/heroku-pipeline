@@ -14,15 +14,13 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
   # display info about the app pipeline
   #
   def index
-    pipeline = [ app ]
     upstream_app = app
+    pipeline = [ upstream_app ]
     until upstream_app.nil?
       downstream_app = get_downstream_app upstream_app
+      verify_config! downstream_app if pipeline.length == 1
       pipeline.push downstream_app unless downstream_app.nil?
-
-      if upstream_app == downstream_app
-        raise Heroku::Command::CommandFailed, "Recursive pipeline: #{pipeline.join ' ---> '}"
-      end
+      raise Heroku::Command::CommandFailed, "Recursive pipeline: #{pipeline.join ' ---> '}" if upstream_app == downstream_app
       upstream_app = downstream_app
     end
 
