@@ -11,7 +11,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
 
   # pipeline
   #
-  # get info about downstream
+  # display info about the app pipeline
   #
   def index
     downstream_app = get_downstream_app
@@ -21,7 +21,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
 
   # pipeline:add downstream_app
   #
-  # add a downstream_app to this app
+  # add a downstream app to this app
   #
   def add
     curr_downstream_app = get_downstream_app
@@ -36,7 +36,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
 
   # pipeline:remove downstream_app
   #
-  # remove the downstream_app of this app
+  # remove the downstream app of this app
   #
   def remove
     downstream_app = get_downstream_app
@@ -48,7 +48,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
 
   # pipeline:promote
   #
-  # promote this app slug to its downstream app
+  # promote the latest release of this app to the downstream app
   #
   def promote
     upstream_app = app

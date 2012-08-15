@@ -1,6 +1,6 @@
 heroku-pipeline
 ===============
-An experimental Heroku CLI plugin for continuous delivery primatives. 
+An experimental Heroku CLI plugin for continuous delivery primitives.
 
 Installation
 ------------
@@ -15,13 +15,18 @@ This plugin requires the following user passes:
 
 Usage
 -----
-There are currently two commands and they ultimately do the same thing -- that is copy a slug from one app to another -- but with different semantics:
+  - `heroku pipeline`                          display info about the app pipeline
+  - `heroku pipeline:add downstream_app`       add a downstream app to this app
+  - `heroku pipeline:promote`                  promote the latest release of this app to the downstream app
+  - `heroku pipeline:remove downstream_app`    remove the downstream app of this app
 
-  - `heroku slugs:cp`: modeled after UNIX `cp` cmd to copy slugs between any two apps the user has access. does not have any app context. 
-  - `heroku pipeline:promote`: copies slug from context app to downstream app defined in `DOWNSTREAM_APP` config var or takes `--downstream` arg
+The functionality in `heroku pipeline:promote` is also exposed as a simple copy command without the concept of pipelines:
+
+  - `slug:cp source_app target_app`    copies the latest release of one app to another app
+
 
 Under the Hood
 --------------
-Both commands are communicating with `http://release-promotion.herokuapp.com`, which is a fork of `https://github.com/ddollar/releases`, 
-but adds the ability to get the slug from an existing app. The slug retrival and new release creation all happens server-side, so there 
+Both commands are communicating with `http://release-pipelines.herokuapp.com`, which is a fork of `https://github.com/ddollar/releases`,
+but adds the ability to get the slug from an existing app. The slug retrieval and new release creation all happens server-side, so there
 is no download/upload cost to the client.

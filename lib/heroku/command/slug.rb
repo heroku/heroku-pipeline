@@ -8,9 +8,9 @@ require 'net/http'
 class Heroku::Command::Slug < Heroku::Command::Base
   VERSION = "0.2-PRE-ALPHA"
 
-  # slug:cp SOURCE_APP TARGET_APP
+  # slug:cp source_app target_app
   #
-  # copy an app slug to app to another app
+  # copies the latest release of one app to another app
   #
   def cp
     raise Heroku::Command::CommandFailed, "Invalid arguments. Usage: heroku slugs:cp SOURCE_APP TARGET_APP" if args.length != 2
