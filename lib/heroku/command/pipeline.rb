@@ -42,7 +42,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
 
     verify_app_access! downstream_app
 
-    heroku.add_config_vars(app, {DOWNSTREAM_APP => downstream_app})
+    Heroku::Auth.api.put_config_vars(app, DOWNSTREAM_APP => downstream_app)
     display "Added downstream app: #{downstream_app}"
   end
 
@@ -54,7 +54,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
     downstream_app = get_downstream_app
     verify_config! downstream_app
 
-    heroku.remove_config_var(app, DOWNSTREAM_APP)
+    Heroku::Auth.api.delete_config_var(app, DOWNSTREAM_APP)
     display "Removed downstream app: #{downstream_app}"
   end
 
@@ -85,7 +85,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
   protected
 
   def get_downstream_app(a = app)
-    config_vars = heroku.config_vars(a)
+    config_vars = Heroku::Auth.api.get_config_vars(a).body
     if config_vars.has_key? DOWNSTREAM_APP
       config_vars[DOWNSTREAM_APP]
     end
