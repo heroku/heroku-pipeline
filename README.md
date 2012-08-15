@@ -27,10 +27,16 @@ An example of a simple pipeline where developers push to a staging app and later
 
     $ heroku pipeline:promote
     Promoting deep-thought-1234-staging to deep-thought-1234...done, v2
+    
+    $ heroku releases --app deep-thought-1234
+    
+    === deep-thought-1234 Releases
+    v2  Copy from deep-thought-1234-staging v6  brainard@heroku.com   1m ago
+    v1  Initial release                       brainard@heroku.com   2m ago
 
 Installation
 ------------
-    $ heroku plugins:install https://github.com/heroku/heroku-pipeline
+    $ heroku plugins:install git@github.com:heroku/heroku-pipeline.git
 
 Setup
 -----
