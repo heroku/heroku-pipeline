@@ -27,7 +27,7 @@ class Heroku::Command::Slug < Heroku::Command::Base
     end
 
     print_and_flush("Copying slug from #{source_app} to #{target_app}...")
-    url = "http://:#{Heroku::Auth.api_key}@release-promotion.herokuapp.com/apps/#{source_app}/copy/#{target_app}"
+    url = "https://:#{Heroku::Auth.api_key}@release-pipelines.herokuapp.com/apps/#{source_app}/copy/#{target_app}"
     body = {
         "cloud" => "heroku.com",
         "command" => "slugs:cp"
