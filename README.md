@@ -16,9 +16,9 @@ This plugin requires the following user passes:
 Usage
 -----
   - `heroku pipeline`                          display info about the app pipeline
-  - `heroku pipeline:add downstream_app`       add a downstream app to this app
+  - `heroku pipeline:add DOWNSTREAM_APP`       add a downstream app to this app
+  - `heroku pipeline:remove`                   remove the downstream app of this app
   - `heroku pipeline:promote`                  promote the latest release of this app to the downstream app
-  - `heroku pipeline:remove downstream_app`    remove the downstream app of this app
 
 The functionality in `heroku pipeline:promote` is also exposed as a simple copy command without the concept of pipelines:
 

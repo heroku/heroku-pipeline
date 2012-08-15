@@ -8,7 +8,7 @@ require 'net/http'
 class Heroku::Command::Slug < Heroku::Command::Base
   VERSION = "0.2-PRE-ALPHA"
 
-  # slug:cp source_app target_app
+  # slug:cp SOURCE_APP TARGET_APP
   #
   # copies the latest release of one app to another app
   #

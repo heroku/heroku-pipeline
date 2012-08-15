@@ -27,7 +27,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
     display "Pipeline: #{pipeline.join ' ---> '}"
   end
 
-  # pipeline:add downstream_app
+  # pipeline:add DOWNSTREAM_APP
   #
   # add a downstream app to this app
   #
@@ -46,7 +46,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
     display "Added downstream app: #{downstream_app}"
   end
 
-  # pipeline:remove downstream_app
+  # pipeline:remove
   #
   # remove the downstream app of this app
   #
