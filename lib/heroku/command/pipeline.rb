@@ -14,9 +14,19 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
   # display info about the app pipeline
   #
   def index
-    downstream_app = get_downstream_app
-    verify_config! downstream_app
-    display "Downstream app: #{downstream_app}"
+    pipeline = [ app ]
+    upstream_app = app
+    until upstream_app.nil?
+      downstream_app = get_downstream_app upstream_app
+      pipeline.push downstream_app unless downstream_app.nil?
+
+      if upstream_app == downstream_app
+        raise Heroku::Command::CommandFailed, "Recursive pipeline: #{pipeline.join ' ---> '}"
+      end
+      upstream_app = downstream_app
+    end
+
+    display "Pipeline: #{pipeline.join ' ---> '}"
   end
 
   # pipeline:add downstream_app
@@ -29,6 +39,10 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
 
     downstream_app = shift_argument
     verify_config! downstream_app
+
+    raise Heroku::Command::CommandFailed, "Downstream app cannot be recursive" if downstream_app == app
+
+    verify_app_access! downstream_app
 
     heroku.add_config_vars(app, {DOWNSTREAM_APP => downstream_app})
     display "Added downstream app: #{downstream_app}"
@@ -57,11 +71,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
     verify_config! downstream_app
 
     [upstream_app, downstream_app].each do |a|
-      begin
-        heroku.get("/apps/#{a}")
-      rescue RestClient::ResourceNotFound => e
-        raise Heroku::Command::CommandFailed, "No access to #{a}"
-      end
+      verify_app_access! a
     end
 
     print_and_flush("Promoting #{upstream_app} to #{downstream_app}...")
@@ -74,11 +84,10 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
     print_and_flush("done, #{json_decode(response)['release']}\n")
   end
 
-
   protected
 
-  def get_downstream_app
-    config_vars = heroku.config_vars(app)
+  def get_downstream_app(a = app)
+    config_vars = heroku.config_vars(a)
     if config_vars.has_key? DOWNSTREAM_APP
       config_vars[DOWNSTREAM_APP]
     end
@@ -87,6 +96,14 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
   def verify_config!(downstream_app)
     if downstream_app.nil?
       raise Heroku::Command::CommandFailed, "Downstream app not specified. Use `heroku pipeline:add DOWNSTREAM_APP` to add one."
+    end
+  end
+
+  def verify_app_access!(app)
+    begin
+      heroku.get("/apps/#{app}")
+    rescue RestClient::ResourceNotFound => e
+      raise Heroku::Command::CommandFailed, "No access to #{app}"
     end
   end
 
