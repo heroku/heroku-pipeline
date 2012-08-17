@@ -31,8 +31,8 @@ An example of a simple pipeline where developers push to a staging app and later
     $ heroku releases --app deep-thought-1234
     
     === deep-thought-1234 Releases
-    v2  Copy from deep-thought-1234-staging v6  brainard@heroku.com   1m ago
-    v1  Initial release                         brainard@heroku.com   2m ago
+    v2  Promote deep-thought-1234-staging v6 0f0a53b  brainard@heroku.com   1m ago
+    v1  Initial release                               brainard@heroku.com   2m ago
 
 Installation
 ------------
