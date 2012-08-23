@@ -6,7 +6,7 @@ require 'net/http'
 # advanced slug operations
 #
 class Heroku::Command::Slug < Heroku::Command::Base
-  VERSION = "0.2-PRE-ALPHA"
+  VERSION = "0.3-PRE-ALPHA"
 
   # slug:cp SOURCE_APP TARGET_APP
   #
@@ -29,7 +29,7 @@ class Heroku::Command::Slug < Heroku::Command::Base
     print_and_flush("Copying slug from #{source_app} to #{target_app}...")
     url = "https://:#{Heroku::Auth.api_key}@release-pipelines.herokuapp.com/apps/#{source_app}/copy/#{target_app}"
     body = {
-        "cloud" => "heroku.com",
+        "cloud"   =>  ENV['HEROKU_HOST'] || "heroku.com",
         "command" => "slugs:cp"
     }
     begin

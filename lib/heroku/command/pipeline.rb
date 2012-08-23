@@ -6,7 +6,7 @@ require 'net/http'
 # Continuous delivery pipeline actions
 #
 class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
-  VERSION = "0.2-PRE-ALPHA"
+  VERSION = "0.3-PRE-ALPHA"
   DOWNSTREAM_APP = "DOWNSTREAM_APP"
 
   # pipeline
@@ -75,7 +75,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
     print_and_flush("Promoting #{upstream_app} to #{downstream_app}...")
     url = "https://:#{Heroku::Auth.api_key}@release-pipelines.herokuapp.com/apps/#{upstream_app}/copy/#{downstream_app}"
     body = {
-        "cloud" => "heroku.com",
+        "cloud"   =>  ENV['HEROKU_HOST'] || "heroku.com",
         "command" => "pipeline:promote"
     }
 
