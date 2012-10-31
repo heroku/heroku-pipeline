@@ -20,7 +20,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
   # display info about the app pipeline
   #
   def index
-    downstreams = json_decode @cisauraus.downstreams(app)
+    downstreams = @cisauraus.downstreams(app)
     verify_downstream! downstreams.first
     display "Pipeline: #{downstreams.unshift(app).join ' ---> '}"
   end
@@ -52,16 +52,11 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
   # promote the latest release of this app to the downstream app
   #
   def promote
-    downstream = (json_decode @cisauraus.downstreams(app)).first
+    downstream = @cisauraus.downstreams(app).first
     verify_downstream! downstream
     print_and_flush("Promoting #{app} to #{downstream}...")
-
-    promotion = @cisauraus.promote(app) do
-      print_and_flush "."
-    end
-
-    body = json_decode promotion
-    print_and_flush("done, #{body['release']}\n")
+    promotion = @cisauraus.promote(app) { print_and_flush "." }
+    print_and_flush("done, #{promotion['release']}\n")
   end
 
   protected

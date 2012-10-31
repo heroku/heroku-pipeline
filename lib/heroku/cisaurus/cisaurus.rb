@@ -1,3 +1,5 @@
+require "json"
+
 class Cisaurus
 
   CLIENT_VERSION = "0.4-PRE-ALPHA"
@@ -9,33 +11,29 @@ class Cisaurus
   end
 
   def downstreams(app)
-    RestClient.get app_url(app) + DOWNSTREAMS, headers
+    JSON.parse RestClient.get app_url(app) + DOWNSTREAMS, headers
   end
 
   def addDownstream(app, downstream)
-    RestClient.post app_url(app) + DOWNSTREAMS + downstream, "", headers
+    JSON.parse RestClient.post app_url(app) + DOWNSTREAMS + downstream, "", headers
   end
 
   def removeDownstream(app, downstream)
-    RestClient.delete app_url(app) + DOWNSTREAMS + downstream, headers
+    JSON.parse RestClient.delete app_url(app) + DOWNSTREAMS + downstream, headers
   end
 
   def diff(app)
-    RestClient.post app_url(app) + "/pipeline/diff", "", headers
+    JSON.parse RestClient.post app_url(app) + "/pipeline/diff", "", headers
   end
 
   def promote(app, interval = 2)
     response = RestClient.post app_url(app) + "/pipeline/promote", "", headers
     while response.code == 202
-      response = get(response.headers[:location])
+      response = RestClient.get @base_url + response.headers[:location], headers
       sleep(interval)
       yield
     end
-    response
-  end
-
-  def get(rel_url)
-    RestClient.get @base_url + rel_url, headers
+    JSON.parse response
   end
 
   private
