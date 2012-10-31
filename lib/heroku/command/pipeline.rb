@@ -58,9 +58,8 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
 
     promotion = @cisauraus.promote(app)
 
-    polling_url = promotion.headers[:location]
     while promotion.code == 202
-      promotion = @cisauraus.get(polling_url)
+      promotion = @cisauraus.get(promotion.headers[:location])
       print_and_flush "."
       sleep 2
     end
