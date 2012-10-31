@@ -5,8 +5,8 @@ describe Heroku::Command::Pipeline do
   subject { output }
 
   before(:all) do
-    @us = ENV['HEROKU_TEST_UPSTREAM_APP'] || "axiomsso-staging"
-    @ds = ENV['HEROKU_TEST_DOWNSTREAM_APP'] || "axiomsso"
+    @us = ENV['HEROKU_TEST_UPSTREAM_APP']
+    @ds = ENV['HEROKU_TEST_DOWNSTREAM_APP']
   end
 
   describe "#index" do
