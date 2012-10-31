@@ -22,10 +22,6 @@ class Cisaurus
     JSON.parse RestClient.delete app_url(app) + DOWNSTREAMS + downstream, headers
   end
 
-  def diff(app)
-    JSON.parse RestClient.post app_url(app) + "/pipeline/diff", "", headers
-  end
-
   def promote(app, interval = 2)
     response = RestClient.post app_url(app) + "/pipeline/promote", "", headers
     while response.code == 202
