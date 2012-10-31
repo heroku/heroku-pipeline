@@ -1,27 +1,33 @@
 class Cisaurus
 
-  HOST = "cisaurus.herokuapp.com"
+  HOST = ENV['CISAURUS_HOST'] || "cisaurus.herokuapp.com"
   DOWNSTREAMS = "/pipeline/downstreams"
   VERSION = "v1"
 
   def initialize(app)
-    @url = "https://:#{Heroku::Auth.api_key}@#{HOST}/#{VERSION}/apps/#{app}"
+    @base_url = "http://:#{Heroku::Auth.api_key}@#{HOST}"
+    @ver_url  = "#{@base_url}/#{VERSION}"
+    @app_url  = "#{@ver_url}/apps/#{app}"
   end
 
   def downstreams
-    RestClient.get @url + DOWNSTREAMS, headers
+    RestClient.get @app_url + DOWNSTREAMS, headers
   end
 
   def addDownstream(downstream)
-    RestClient.post @url + DOWNSTREAMS + downstream, "", headers
+    RestClient.post @app_url + DOWNSTREAMS + downstream, "", headers
   end
 
   def removeDownstream(downstream)
-    RestClient.delete @url + DOWNSTREAMS + downstream, headers
+    RestClient.delete @app_url + DOWNSTREAMS + downstream, headers
   end
 
   def promote
-    RestClient.post @url + "/pipeline/promote", "", headers
+    RestClient.post @app_url + "/pipeline/promote", "", headers
+  end
+
+  def check_status(id)
+    RestClient.get @ver_url + "/jobs/" + id, headers
   end
 
   private

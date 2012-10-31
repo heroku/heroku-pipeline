@@ -51,7 +51,16 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
     downstream = (json_decode Cisaurus.new(app).downstreams).first
     verify_downstream! downstream
     print_and_flush("Promoting #{app} to #{downstream}...")
+
     promotion = json_decode Cisaurus.new(app).promote
+    poll_id = promotion['poll-id']
+
+    while promotion['release'].nil?
+      promotion = json_decode Cisaurus.new(app).check_status(poll_id)
+      print_and_flush "."
+      sleep 2
+    end
+
     print_and_flush("done, #{promotion['release']}\n")
   end
 
