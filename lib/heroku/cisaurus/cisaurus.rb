@@ -3,7 +3,6 @@ require "json"
 class Cisaurus
 
   CLIENT_VERSION = "0.4-PRE-ALPHA"
-  DOWNSTREAMS = "/pipeline/downstreams"
 
   def initialize(api_key, host = "cisaurus.herokuapp.com", api_version = "v1")
     @base_url = "http://:#{api_key}@#{host}"
@@ -11,19 +10,19 @@ class Cisaurus
   end
 
   def downstreams(app)
-    JSON.parse RestClient.get app_url(app) + DOWNSTREAMS, headers
+    JSON.parse RestClient.get pipeline_resource(app, "downstreams"), headers
   end
 
-  def addDownstream(app, downstream)
-    JSON.parse RestClient.post app_url(app) + DOWNSTREAMS + downstream, "", headers
+  def addDownstream(app, ds)
+    RestClient.post pipeline_resource(app, "downstreams", ds), "", headers
   end
 
-  def removeDownstream(app, downstream)
-    JSON.parse RestClient.delete app_url(app) + DOWNSTREAMS + downstream, headers
+  def removeDownstream(app, ds)
+    RestClient.delete pipeline_resource(app, "downstreams", ds), headers
   end
 
   def promote(app, interval = 2)
-    response = RestClient.post app_url(app) + "/pipeline/promote", "", headers
+    response = RestClient.post pipeline_resource(app, "promote"), "", headers
     while response.code == 202
       response = RestClient.get @base_url + response.headers[:location], headers
       sleep(interval)
@@ -33,8 +32,9 @@ class Cisaurus
   end
 
   private
-  def app_url(app)
-    "#{@ver_url}/apps/#{app}"
+
+  def pipeline_resource(app, *extras)
+    "#{@ver_url}/" + extras.unshift("apps/#{app}/pipeline").join("/")
   end
 
   def headers
