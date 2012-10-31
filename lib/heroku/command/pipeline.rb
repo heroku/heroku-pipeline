@@ -8,15 +8,19 @@ require 'net/http'
 #
 class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
 
-  VERSION = "0.4-PRE-ALPHA"
   DOWNSTREAM_APP = "DOWNSTREAM_APP"
+
+  def initialize(args, heroku=nil)
+    super(args, heroku)
+    @cisauraus = Cisaurus.new(Heroku::Auth.api_key)
+  end
 
   # pipeline
   #
   # display info about the app pipeline
   #
   def index
-    downstreams = json_decode Cisaurus.new(app).downstreams
+    downstreams = json_decode @cisauraus.downstreams(app)
     verify_downstream! downstreams.first
     display "Pipeline: #{downstreams.unshift(app).join ' ---> '}"
   end
@@ -28,7 +32,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
   def add
     downstream = shift_argument
     verify_downstream! downstream
-    Cisaurus.new(app).addDownstream downstream
+    @cisauraus.addDownstream(app, downstream)
     display "Added downstream app: #{downstream}"
   end
 
@@ -39,7 +43,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
   def remove
     downstream = shift_argument
     verify_downstream! downstream
-    Cisaurus.new(app).removeDownstream downstream
+    @cisauraus.removeDownstream(app, downstream)
     display "Removed downstream app: #{downstream}"
   end
 
@@ -48,20 +52,21 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
   # promote the latest release of this app to the downstream app
   #
   def promote
-    downstream = (json_decode Cisaurus.new(app).downstreams).first
+    downstream = (json_decode @cisauraus.downstreams(app)).first
     verify_downstream! downstream
     print_and_flush("Promoting #{app} to #{downstream}...")
 
-    promotion = json_decode Cisaurus.new(app).promote
-    poll_id = promotion['poll-id']
+    promotion = @cisauraus.promote(app)
 
-    while promotion['release'].nil?
-      promotion = json_decode Cisaurus.new(app).check_status(poll_id)
+    polling_url = promotion.headers[:location]
+    while promotion.code == 202
+      promotion = @cisauraus.get(polling_url)
       print_and_flush "."
       sleep 2
     end
 
-    print_and_flush("done, #{promotion['release']}\n")
+    body = json_decode promotion
+    print_and_flush("done, #{body['release']}\n")
   end
 
   protected
