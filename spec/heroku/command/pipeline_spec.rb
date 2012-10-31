@@ -10,26 +10,22 @@ describe Heroku::Command::Pipeline do
   end
 
   describe "#index" do
-    context "basic" do
-      before(:each) do
-        heroku "pipeline -a #{@us}"
-      end
-
-      it { should include "#{@us} ---> #{@ds}" }
+    before(:each) do
+      heroku "pipeline -a #{@us}"
     end
+
+    it { should include "#{@us} ---> #{@ds}" }
   end
 
   describe "#promote" do
-    context "basic" do
-      before do
-        heroku "pipeline:promote -a #{@us}"
-      end
-
-      it {
-        should include "Promoting #{@us} to #{@ds}..."
-        should include "done, v"
-      }
+    before do
+      heroku "pipeline:promote -a #{@us}"
     end
+
+    it {
+      should include "Promoting #{@us} to #{@ds}..."
+      should include "done, v"
+    }
   end
 
 end
