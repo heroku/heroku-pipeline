@@ -20,8 +20,18 @@ class Cisaurus
     RestClient.delete app_url(app) + DOWNSTREAMS + downstream, headers
   end
 
-  def promote(app)
-    RestClient.post app_url(app) + "/pipeline/promote", "", headers
+  def diff(app)
+    RestClient.post app_url(app) + "/pipeline/diff", "", headers
+  end
+
+  def promote(app, interval = 2)
+    response = RestClient.post app_url(app) + "/pipeline/promote", "", headers
+    while response.code == 202
+      response = get(response.headers[:location])
+      sleep(interval)
+      yield
+    end
+    response
   end
 
   def get(rel_url)

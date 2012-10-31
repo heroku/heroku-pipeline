@@ -56,12 +56,8 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
     verify_downstream! downstream
     print_and_flush("Promoting #{app} to #{downstream}...")
 
-    promotion = @cisauraus.promote(app)
-
-    while promotion.code == 202
-      promotion = @cisauraus.get(promotion.headers[:location])
+    promotion = @cisauraus.promote(app) do
       print_and_flush "."
-      sleep 2
     end
 
     body = json_decode promotion
