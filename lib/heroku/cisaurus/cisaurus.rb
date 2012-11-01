@@ -22,6 +22,10 @@ class Cisaurus
     RestClient.delete pipeline_resource(app, "downstreams", ds), headers
   end
 
+  def diff(app)
+    JSON.parse RestClient.get pipeline_resource(app, "diff"), headers
+  end
+
   def promote(app, interval = 2)
     response = RestClient.post pipeline_resource(app, "promote"), "", headers
     while response.code == 202

@@ -47,6 +47,34 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
     display "Removed downstream app: #{downstream}"
   end
 
+  # pipeline:diff
+  #
+  # compare the latest release of this app to the downstream app
+  #
+  def diff
+    downstream = @cisauraus.downstreams(app).first
+    verify_downstream! downstream
+
+    print_and_flush "Comparing #{app} to #{downstream}..."
+
+    diff = @cisauraus.diff(app)
+    print_and_flush "done, "
+
+    if diff.size > 0
+      display "#{app} ahead by #{diff.size} commits:"
+      diff.each do |commit|
+        commit_detail = `git log -n 1 --pretty=format:"  %h  %ad  %s  (%an)" --date=short  #{commit} 2>/dev/null`
+        if $?.exitstatus == 0
+          display commit_detail
+        else
+          display "  #{commit}"
+        end
+      end
+    else
+      display "everything is up to date"
+    end
+  end
+
   # pipeline:promote
   #
   # promote the latest release of this app to the downstream app
