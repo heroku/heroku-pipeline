@@ -50,4 +50,5 @@ Commands
   - `heroku pipeline`                          display info about the app pipeline
   - `heroku pipeline:add DOWNSTREAM_APP`       add a downstream app to this app
   - `heroku pipeline:remove`                   remove the downstream app of this app
-  - `heroku pipeline:promote`                  promote the latest release of this app to the downstream app
+  - `heroku pipeline:diff`                     compare the commits of this app to its downstream app
+  - `heroku pipeline:promote`                  promote the latest release of this app to its downstream app

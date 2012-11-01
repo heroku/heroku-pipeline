@@ -49,7 +49,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
 
   # pipeline:diff
   #
-  # compare the latest release of this app to the downstream app
+  # compare the commits of this app to its downstream app
   #
   def diff
     downstream = @cisauraus.downstreams(app).first
@@ -77,7 +77,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
 
   # pipeline:promote
   #
-  # promote the latest release of this app to the downstream app
+  # promote the latest release of this app to its downstream app
   #
   def promote
     downstream = @cisauraus.downstreams(app).first
