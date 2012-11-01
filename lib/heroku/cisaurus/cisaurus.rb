@@ -3,8 +3,9 @@ require "json"
 class Cisaurus
 
   CLIENT_VERSION = "0.4-PRE-ALPHA"
+  DEFAULT_HOST = ENV['CISAURUS_HOST'] || "cisaurus.herokuapp.com"
 
-  def initialize(api_key, host = "cisaurus.herokuapp.com", api_version = "v1")
+  def initialize(api_key, host = DEFAULT_HOST, api_version = "v1")
     @base_url = "http://:#{api_key}@#{host}"
     @ver_url  = "#{@base_url}/#{api_version}"
   end
