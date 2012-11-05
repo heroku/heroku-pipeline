@@ -5,4 +5,5 @@ gem "heroku-api"
 
 group :test do
   gem "rspec"
+  gem "webmock"
 end

@@ -4,3 +4,4 @@ require "rspec"
 require "tempfile"
 require "support/output"
 require "support/heroku"
+require 'webmock/rspec'

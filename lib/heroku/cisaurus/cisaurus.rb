@@ -6,7 +6,7 @@ class Cisaurus
   DEFAULT_HOST = ENV['CISAURUS_HOST'] || "cisaurus.herokuapp.com"
 
   def initialize(api_key, host = DEFAULT_HOST, api_version = "v1")
-    @base_url = "http://:#{api_key}@#{host}"
+    @base_url = "https://:#{api_key}@#{host}"
     @ver_url  = "#{@base_url}/#{api_version}"
   end
 
