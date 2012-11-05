@@ -21,9 +21,15 @@ An example of a simple pipeline where developers push to a staging app and later
     $ heroku pipeline
     Pipeline: deep-thought-1234-staging ---> deep-thought-1234
 
+    $ git commit -m "A super important fix"
+
     $ git push heroku master
 
     ...
+
+    $ heroku pipeline:diff
+    Comparing deep-thought-1234-staging to deep-thought-1234...deep-thought-1234-staging ahead by #{diff.size} commit:
+      73ab415  2012-01-01  A super important fix  (Joe Developer)
 
     $ heroku pipeline:promote
     Promoting deep-thought-1234-staging to deep-thought-1234...done, v2

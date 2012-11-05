@@ -61,7 +61,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
     print_and_flush "done, "
 
     if diff.size > 0
-      display "#{app} ahead by #{diff.size} commits:"
+      display "#{app} ahead by #{diff.size} #{plural('commit', diff.size)}:"
       diff.each do |commit|
         commit_detail = `git log -n 1 --pretty=format:"  %h  %ad  %s  (%an)" --date=short  #{commit} 2>/dev/null`
         if $?.exitstatus == 0
@@ -88,6 +88,14 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
   end
 
   protected
+
+  def plural(word, qty)
+    if (qty == 1)
+      word
+    else
+      word + "s"
+    end
+  end
 
   def verify_downstream!(downstream_app)
     if downstream_app.nil?
