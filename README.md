@@ -28,7 +28,7 @@ An example of a simple pipeline where developers push to a staging app and later
     ...
 
     $ heroku pipeline:diff
-    Comparing deep-thought-1234-staging to deep-thought-1234...deep-thought-1234-staging ahead by #{diff.size} commit:
+    Comparing deep-thought-1234-staging to deep-thought-1234...done, deep-thought-1234-staging ahead by 1 commit:
       73ab415  2012-01-01  A super important fix  (Joe Developer)
 
     $ heroku pipeline:promote

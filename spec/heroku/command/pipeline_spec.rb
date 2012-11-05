@@ -38,6 +38,18 @@ describe Heroku::Command::Pipeline do
     it { should include "Removed downstream app: prod" }
   end
 
+  describe "#diff" do
+    before do
+      stub_pipeline_resource(:get, "staging", "downstreams").to_return(:body => JSON.generate(["prod"]))
+      stub_pipeline_resource(:get, "staging", "diff").to_return(:body => JSON.generate(["COMMIT_A", "COMMIT_B"]))
+      heroku "pipeline:diff -a staging"
+    end
+
+    it { should include "Comparing staging to prod...done, staging ahead by 2 commits" }
+    it { should include "COMMIT_A" }
+    it { should include "COMMIT_B" }
+  end
+
   describe "#promote" do
     before do
       stub_pipeline_resource(:get,  "staging", "downstreams").to_return(:body => JSON.generate(["prod"]))
