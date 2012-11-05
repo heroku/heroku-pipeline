@@ -10,9 +10,23 @@ describe Heroku::Command::Pipeline do
   end
 
   context "without downstreams configured" do
+    describe "downstream-requiring operations" do
+      before do
+        stub_pipeline_request(:get, "dev", "downstreams").to_return(:body => JSON.generate([]))
+      end
+
+      [
+          lambda { heroku "pipeline -a dev" },
+          lambda { heroku "pipeline:diff -a dev" },
+          lambda { heroku "pipeline:promote -a dev" }
+      ].each do |e|
+        it { e.should raise_error Heroku::Command::CommandFailed, /Downstream app not specified/ }
+      end
+    end
+
     describe "#add" do
       before do
-        stub_pipeline_resource(:post, "staging", "downstreams", "prod")
+        stub_pipeline_request(:post, "staging", "downstreams", "prod")
         heroku "pipeline:add prod -a staging"
       end
 
@@ -21,7 +35,7 @@ describe Heroku::Command::Pipeline do
 
     describe "#remove" do
       before do
-        stub_pipeline_resource(:delete, "staging", "downstreams", "prod")
+        stub_pipeline_request(:delete, "staging", "downstreams", "prod")
         heroku "pipeline:remove prod -a staging"
       end
 
@@ -31,8 +45,8 @@ describe Heroku::Command::Pipeline do
 
   context "with downstreams configured" do
     before do
-      stub_pipeline_resource(:get, "dev",     "downstreams").to_return(:body => JSON.generate(["staging", "prod"]))
-      stub_pipeline_resource(:get, "staging", "downstreams").to_return(:body => JSON.generate(["prod"]))
+      stub_pipeline_request(:get, "dev",     "downstreams").to_return(:body => JSON.generate(["staging", "prod"]))
+      stub_pipeline_request(:get, "staging", "downstreams").to_return(:body => JSON.generate(["prod"]))
     end
 
     describe "#index" do
@@ -45,7 +59,7 @@ describe Heroku::Command::Pipeline do
 
     describe "#diff" do
       before do
-        stub_pipeline_resource(:get, "staging", "diff").to_return(:body => JSON.generate(["COMMIT_A", "COMMIT_B"]))
+        stub_pipeline_request(:get, "staging", "diff").to_return(:body => JSON.generate(["COMMIT_A", "COMMIT_B"]))
         heroku "pipeline:diff -a staging"
       end
 
@@ -56,7 +70,7 @@ describe Heroku::Command::Pipeline do
 
     describe "#promote" do
       before do
-        stub_pipeline_resource(:post, "staging", "promote").to_return(:body => JSON.generate("release" => "v0"))
+        stub_pipeline_request(:post, "staging", "promote").to_return(:body => JSON.generate("release" => "v0"))
         heroku "pipeline:promote prod -a staging"
       end
 
@@ -64,7 +78,7 @@ describe Heroku::Command::Pipeline do
     end
   end
 
-  def stub_pipeline_resource(method, app, *extras)
+  def stub_pipeline_request(method, app, *extras)
     stub_request(method, "https://cisaurus.herokuapp.com/v1/" + extras.unshift("apps/#{app}/pipeline").join("/"))
   end
 end
