@@ -79,6 +79,6 @@ describe Heroku::Command::Pipeline do
   end
 
   def stub_pipeline_request(method, app, *extras)
-    stub_request(method, "https://cisaurus.herokuapp.com/v1/" + extras.unshift("apps/#{app}/pipeline").join("/"))
+    stub_request(method, "https://cisaurus.heroku.com/v1/" + extras.unshift("apps/#{app}/pipeline").join("/"))
   end
 end
