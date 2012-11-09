@@ -44,13 +44,6 @@ Installation
 ------------
     $ heroku plugins:install git@github.com:heroku/heroku-pipeline.git
 
-Setup
------
-This plugin requires the following user passes:
-
- - `new-releases`
- - `releases_slug`
-
 Commands
 --------
   - `heroku pipeline`                          display info about the app pipeline
