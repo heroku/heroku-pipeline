@@ -1,13 +1,8 @@
 heroku-pipeline
 ===============
-An experimental Heroku CLI plugin for continuous delivery on Heroku.
+An experimental Heroku CLI plugin for [continuous delivery](http://en.wikipedia.org/wiki/Continuous_delivery) on Heroku.
 
-The pipeline commands set up a simple pipeline of apps
-where the latest release of one app can be promoted to the next app downstream.
-The promotion only copies the slug and leaves the downstream app's config vars and add-ons untouched.
-The pipeline configuration is stored as a config var in the upstream app
-so it is globally accessible to collaborators and does not depend on another service maintaining state.
-An app can only have one downstream app, but there is no limit to the length of the pipeline.
+This plugin is used to set up a simple pipeline of apps where the latest release of one app can be promoted to the next app downstream. The promotion only copies the upstream build artifact and leaves the downstream app's config vars, add-ons, and Git repo untouched. An app can only have one downstream app, but there is no limit to the length of the pipeline or the number of upstream apps. 
 
 Example Usage
 -------------
