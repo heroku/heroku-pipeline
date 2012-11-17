@@ -1,5 +1,3 @@
-require "json"
-
 class Cisaurus
 
   CLIENT_VERSION = "0.4-PRE-ALPHA"
@@ -11,7 +9,7 @@ class Cisaurus
   end
 
   def downstreams(app)
-    JSON.parse RestClient.get pipeline_resource(app, "downstreams"), headers
+    Heroku::OkJson.decode RestClient.get pipeline_resource(app, "downstreams"), headers
   end
 
   def addDownstream(app, ds)
@@ -23,7 +21,7 @@ class Cisaurus
   end
 
   def diff(app)
-    JSON.parse RestClient.get pipeline_resource(app, "diff"), headers
+    Heroku::OkJson.decode RestClient.get pipeline_resource(app, "diff"), headers
   end
 
   def promote(app, interval = 2)
@@ -33,7 +31,7 @@ class Cisaurus
       sleep(interval)
       yield
     end
-    JSON.parse response
+    Heroku::OkJson.decode response
   end
 
   private

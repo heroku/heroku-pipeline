@@ -12,7 +12,7 @@ describe Heroku::Command::Pipeline do
   context "without downstreams configured" do
     describe "downstream-requiring operations" do
       before do
-        stub_pipeline_request(:get, "dev", "downstreams").to_return(:body => JSON.generate([]))
+        stub_pipeline_request(:get, "dev", "downstreams").to_return(:body => Heroku::OkJson.encode([]))
       end
 
       [
@@ -45,8 +45,8 @@ describe Heroku::Command::Pipeline do
 
   context "with downstreams configured" do
     before do
-      stub_pipeline_request(:get, "dev",     "downstreams").to_return(:body => JSON.generate(["staging", "prod"]))
-      stub_pipeline_request(:get, "staging", "downstreams").to_return(:body => JSON.generate(["prod"]))
+      stub_pipeline_request(:get, "dev",     "downstreams").to_return(:body => Heroku::OkJson.encode(["staging", "prod"]))
+      stub_pipeline_request(:get, "staging", "downstreams").to_return(:body => Heroku::OkJson.encode(["prod"]))
     end
 
     describe "#index" do
@@ -59,7 +59,7 @@ describe Heroku::Command::Pipeline do
 
     describe "#diff" do
       before do
-        stub_pipeline_request(:get, "staging", "diff").to_return(:body => JSON.generate(["COMMIT_A", "COMMIT_B"]))
+        stub_pipeline_request(:get, "staging", "diff").to_return(:body => Heroku::OkJson.encode(["COMMIT_A", "COMMIT_B"]))
         heroku "pipeline:diff -a staging"
       end
 
@@ -70,7 +70,7 @@ describe Heroku::Command::Pipeline do
 
     describe "#promote" do
       before do
-        stub_pipeline_request(:post, "staging", "promote").to_return(:body => JSON.generate("release" => "v0"))
+        stub_pipeline_request(:post, "staging", "promote").to_return(:body => Heroku::OkJson.encode("release" => "v0"))
         heroku "pipeline:promote prod -a staging"
       end
 
