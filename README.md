@@ -46,3 +46,8 @@ Commands
   - `heroku pipeline:remove`                   remove the downstream app of this app
   - `heroku pipeline:diff`                     compare the commits of this app to its downstream app
   - `heroku pipeline:promote`                  promote the latest release of this app to its downstream app
+
+Rolling Back
+------------
+`heroku rollback` is a standard `heroku` command that allows you to rollback when something goes wrong. Its
+behavior is the same when using pipelines. Use it anytime you need to revert a pipeline promotion.
