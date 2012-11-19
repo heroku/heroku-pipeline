@@ -13,6 +13,7 @@ describe Heroku::Command::Pipeline do
     describe "downstream-requiring operations" do
       before do
         stub_pipeline_request(:get, "dev", "downstreams").to_return(:body => JSON.generate([]))
+        stub_pipeline_request(:get, "dev", "downstreams").with(:query => { "depth" => 1 }).to_return(:body => JSON.generate([]))
       end
 
       [
@@ -46,7 +47,9 @@ describe Heroku::Command::Pipeline do
   context "with downstreams configured" do
     before do
       stub_pipeline_request(:get, "dev",     "downstreams").to_return(:body => JSON.generate(["staging", "prod"]))
+      stub_pipeline_request(:get, "dev",     "downstreams").with(:query => { "depth" => 1 }).to_return(:body => JSON.generate(["staging"]))
       stub_pipeline_request(:get, "staging", "downstreams").to_return(:body => JSON.generate(["prod"]))
+      stub_pipeline_request(:get, "staging", "downstreams").with(:query => { "depth" => 1 }).to_return(:body => JSON.generate(["prod"]))
     end
 
     describe "#index" do
