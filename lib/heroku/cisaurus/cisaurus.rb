@@ -2,7 +2,7 @@ require "json"
 
 class Cisaurus
 
-  CLIENT_VERSION = "0.6-ALPHA"
+  CLIENT_VERSION = "0.7-ALPHA"
   DEFAULT_HOST = ENV['CISAURUS_HOST'] || "cisaurus.heroku.com"
 
   def initialize(api_key, host = DEFAULT_HOST, api_version = "v1")
@@ -30,7 +30,7 @@ class Cisaurus
   def promote(app, interval = 2)
     response = RestClient.post pipeline_resource(app, "promote"), "", options
     while response.code == 202
-      response = RestClient.get @base_url + response.options[:location], options
+      response = RestClient.get @base_url + response.headers[:location], options
       sleep(interval)
       yield
     end

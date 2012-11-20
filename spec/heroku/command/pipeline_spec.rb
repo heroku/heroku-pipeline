@@ -81,11 +81,12 @@ describe Heroku::Command::Pipeline do
 
     describe "#promote" do
       before do
-        stub_pipeline_request(:post, "staging", "promote").to_return(:body => JSON.generate("release" => "v0"))
+        stub_pipeline_request(:post, "staging", "promote").to_return(:status => 202, :headers => { "Location" => "/v1/jobs/mocked" })
+        stub_request(:get,  "https://cisaurus.heroku.com/v1/jobs/mocked").to_return(:body => JSON.generate("release" => "v0"))
         heroku "pipeline:promote prod -a staging"
       end
 
-      it { should include "Promoting staging to prod...done, v0" }
+      it { should include "Promoting staging to prod....done, v0" }
     end
   end
 
