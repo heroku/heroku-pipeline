@@ -81,8 +81,8 @@ describe Heroku::Command::Pipeline do
 
     describe "#promote" do
       before do
-        stub_pipeline_request(:post, "staging", "promote").to_return(:status => 202, :headers => { "Location" => "/v1/jobs/mocked" })
-        stub_request(:get,  "https://cisaurus.heroku.com/v1/jobs/mocked").to_return(:body => JSON.generate("release" => "v0"))
+        stub_pipeline_request(:post, "staging", "promote").to_return(:status => 202, :headers => { "Location" => "/v1/mocking" })
+        stub_request(:get,  v1 + "/mocking").to_return(:body => JSON.generate("release" => "v0"))
         heroku "pipeline:promote prod -a staging"
       end
 
@@ -91,6 +91,10 @@ describe Heroku::Command::Pipeline do
   end
 
   def stub_pipeline_request(method, app, *extras)
-    stub_request(method, "https://cisaurus.heroku.com/v1/" + extras.unshift("apps/#{app}/pipeline").join("/"))
+    stub_request(method, v1 + extras.unshift("/apps/#{app}/pipeline").join("/"))
+  end
+
+  def v1
+     "https://#{Cisaurus::DEFAULT_HOST}/v1"
   end
 end
