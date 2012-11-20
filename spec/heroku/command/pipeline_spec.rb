@@ -60,6 +60,14 @@ describe Heroku::Command::Pipeline do
       it { should include "dev ---> staging ---> prod" }
     end
 
+    describe "#index with depth" do
+      before do
+        heroku "pipeline -a dev -d 1"
+      end
+
+      it { should include "dev ---> staging" }
+    end
+
     describe "#diff" do
       before do
         stub_pipeline_request(:get, "staging", "diff").to_return(:body => JSON.generate(["COMMIT_A", "COMMIT_B"]))

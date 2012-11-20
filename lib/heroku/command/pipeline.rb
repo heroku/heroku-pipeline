@@ -19,8 +19,10 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
   #
   # display info about the app pipeline
   #
+  # -d, --depth DEPTH  # limit the pipeline to a given number of downstreams
+  #
   def index
-    downstreams = @cisauraus.downstreams(app)
+    downstreams = @cisauraus.downstreams(app, options[:depth])
     verify_downstream! downstreams.first
     display "Pipeline: #{downstreams.unshift(app).join ' ---> '}"
   end
