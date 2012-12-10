@@ -1,8 +1,6 @@
-require "json"
-
 class Cisaurus
 
-  CLIENT_VERSION = "0.7-ALPHA"
+  CLIENT_VERSION = "0.8-ALPHA"
   DEFAULT_HOST = ENV['CISAURUS_HOST'] || "cisaurus.heroku.com"
 
   def initialize(api_key, host = DEFAULT_HOST, api_version = "v1")
@@ -12,7 +10,7 @@ class Cisaurus
   end
 
   def downstreams(app, depth=nil)
-    JSON.parse RestClient.get pipeline_resource(app, "downstreams"), options(params :depth => depth)
+    Heroku::OkJson.decode RestClient.get pipeline_resource(app, "downstreams"), options(params :depth => depth)
   end
 
   def addDownstream(app, ds)
@@ -24,7 +22,7 @@ class Cisaurus
   end
 
   def diff(app)
-    JSON.parse RestClient.get pipeline_resource(app, "diff"), options
+    Heroku::OkJson.decode RestClient.get pipeline_resource(app, "diff"), options
   end
 
   def promote(app, interval = 2)
@@ -34,7 +32,7 @@ class Cisaurus
       sleep(interval)
       yield
     end
-    JSON.parse response
+    Heroku::OkJson.decode response
   end
 
   private
