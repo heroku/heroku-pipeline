@@ -1,6 +1,8 @@
+require "json"
+
 class Cisaurus
 
-  CLIENT_VERSION = "0.8-ALPHA"
+  CLIENT_VERSION = "0.9"
   DEFAULT_HOST = ENV['CISAURUS_HOST'] || "cisaurus.heroku.com"
 
   def initialize(api_key, host = DEFAULT_HOST, api_version = "v1")
@@ -10,29 +12,39 @@ class Cisaurus
   end
 
   def downstreams(app, depth=nil)
-    Heroku::OkJson.decode RestClient.get pipeline_resource(app, "downstreams"), options(params :depth => depth)
+    handle_error do
+      Heroku::OkJson.decode RestClient.get pipeline_resource(app, "downstreams"), options(params :depth => depth)
+    end
   end
 
   def addDownstream(app, ds)
-    RestClient.post pipeline_resource(app, "downstreams", ds), "", options
+    handle_error do
+      RestClient.post pipeline_resource(app, "downstreams", ds), "", options
+    end
   end
 
   def removeDownstream(app, ds)
-    RestClient.delete pipeline_resource(app, "downstreams", ds), options
+    handle_error do
+      RestClient.delete pipeline_resource(app, "downstreams", ds), options
+    end
   end
 
   def diff(app)
-    Heroku::OkJson.decode RestClient.get pipeline_resource(app, "diff"), options
+    handle_error do
+      Heroku::OkJson.decode RestClient.get pipeline_resource(app, "diff"), options
+    end
   end
 
   def promote(app, interval = 2)
-    response = RestClient.post pipeline_resource(app, "promote"), "", options
-    while response.code == 202
-      response = RestClient.get @base_url + response.headers[:location], options
-      sleep(interval)
-      yield
+    handle_error do
+      response = RestClient.post pipeline_resource(app, "promote"), "", options
+      while response.code == 202
+        response = RestClient.get @base_url + response.headers[:location], options
+        sleep(interval)
+        yield
+      end
+      Heroku::OkJson.decode response
     end
-    Heroku::OkJson.decode response
   end
 
   private
@@ -52,4 +64,18 @@ class Cisaurus
         'X-Ruby-Platform'  => RUBY_PLATFORM
     }.merge(extras)
   end
+
+  def handle_error(&request)
+    begin
+      request.call
+    rescue RestClient::Exception => e
+      body = JSON.parse e.response
+      if !body.nil? && (body.has_key? 'error')
+        raise Heroku::Command::CommandFailed, body['error']
+      else
+        raise e
+      end
+    end
+  end
+
 end
