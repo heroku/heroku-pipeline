@@ -1,8 +1,6 @@
-require "json"
-
 class Cisaurus
 
-  CLIENT_VERSION = "0.9"
+  CLIENT_VERSION = "0.10"
   DEFAULT_HOST = ENV['CISAURUS_HOST'] || "cisaurus.heroku.com"
 
   def initialize(api_key, host = DEFAULT_HOST, api_version = "v1")
