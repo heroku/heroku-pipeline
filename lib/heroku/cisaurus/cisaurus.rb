@@ -1,6 +1,6 @@
 class Cisaurus
 
-  CLIENT_VERSION = "0.10"
+  CLIENT_VERSION = "0.11"
   DEFAULT_HOST = ENV['CISAURUS_HOST'] || "cisaurus.heroku.com"
 
   def initialize(api_key, host = DEFAULT_HOST, api_version = "v1")
@@ -67,7 +67,7 @@ class Cisaurus
     begin
       request.call
     rescue RestClient::Exception => e
-      body = JSON.parse e.response
+      body = Heroku::OkJson.decode e.response
       if !body.nil? && (body.has_key? 'error')
         raise Heroku::Command::CommandFailed, body['error']
       else
