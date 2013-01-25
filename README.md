@@ -8,6 +8,11 @@ Example Usage
 -------------
 An example of a simple pipeline where developers push to a staging app and later promote the slug to production:
 
+    $ heroku labs:enable pipelines
+    Enabling pipelines for you@yourcompany.com... done
+    WARNING: This feature is experimental and may change or be removed without notice.
+    For more information see: https://devcenter.heroku.com/articles/using-pipelines-to-deploy-between-applications
+
     $ cd deep-thought-1234-staging
 
     $ heroku pipeline:add deep-thought-1234
