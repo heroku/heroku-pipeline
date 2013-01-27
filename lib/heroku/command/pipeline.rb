@@ -4,7 +4,7 @@ require 'heroku/api/config_vars'
 require 'rest_client'
 require 'net/http'
 
-# Continuous delivery pipeline actions
+# manage continuous delivery pipelines
 #
 class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
 
