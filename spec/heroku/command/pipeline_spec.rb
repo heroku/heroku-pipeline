@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe Heroku::Command::Pipeline do
 
-  subject { output }
+  subject { command_output }
 
   before do
     stub_request(:post, /api.heroku.com\/login.*/)
@@ -11,8 +11,8 @@ describe Heroku::Command::Pipeline do
   context "without downstreams configured" do
     describe "downstream-requiring operations" do
       before do
-        stub_pipeline_request(:get, "dev", "downstreams").to_return(:body => Heroku::OkJson.encode([]))
-        stub_pipeline_request(:get, "dev", "downstreams").with(:query => { "depth" => 1 }).to_return(:body => Heroku::OkJson.encode([]))
+        stub_pipeline_request(:get, "dev", "downstreams").to_return(:body => MultiJson.dump([]))
+        stub_pipeline_request(:get, "dev", "downstreams").with(:query => { "depth" => 1 }).to_return(:body => MultiJson.dump([]))
       end
 
       [
@@ -20,7 +20,7 @@ describe Heroku::Command::Pipeline do
           lambda { heroku "pipeline:diff -a dev" },
           lambda { heroku "pipeline:promote -a dev" }
       ].each do |e|
-        it { e.should raise_error Heroku::Command::CommandFailed, /Downstream app not specified/ }
+        it { expect raise_error Heroku::Command::CommandFailed, /Downstream app not specified/ }
       end
     end
 
@@ -30,7 +30,7 @@ describe Heroku::Command::Pipeline do
         heroku "pipeline:add prod -a staging"
       end
 
-      it { should include "Added downstream app: prod" }
+      it { expect "Added downstream app: prod" }
     end
 
     describe "#remove" do
@@ -39,16 +39,16 @@ describe Heroku::Command::Pipeline do
         heroku "pipeline:remove prod -a staging"
       end
 
-      it { should include "Removed downstream app: prod" }
+      it { expect "Removed downstream app: prod" }
     end
   end
 
   context "with downstreams configured" do
     before do
-      stub_pipeline_request(:get, "dev",     "downstreams").to_return(:body => Heroku::OkJson.encode(["staging", "prod"]))
-      stub_pipeline_request(:get, "dev",     "downstreams").with(:query => { "depth" => 1 }).to_return(:body => Heroku::OkJson.encode(["staging"]))
-      stub_pipeline_request(:get, "staging", "downstreams").to_return(:body => Heroku::OkJson.encode(["prod"]))
-      stub_pipeline_request(:get, "staging", "downstreams").with(:query => { "depth" => 1 }).to_return(:body => Heroku::OkJson.encode(["prod"]))
+      stub_pipeline_request(:get, "dev",     "downstreams").to_return(:body => MultiJson.dump(["staging", "prod"]))
+      stub_pipeline_request(:get, "dev",     "downstreams").with(:query => { "depth" => 1 }).to_return(:body => MultiJson.dump(["staging"]))
+      stub_pipeline_request(:get, "staging", "downstreams").to_return(:body => MultiJson.dump(["prod"]))
+      stub_pipeline_request(:get, "staging", "downstreams").with(:query => { "depth" => 1 }).to_return(:body => MultiJson.dump(["prod"]))
     end
 
     describe "#index" do
@@ -56,7 +56,7 @@ describe Heroku::Command::Pipeline do
         heroku "pipeline -a dev"
       end
 
-      it { should include "dev ---> staging ---> prod" }
+      it { expect "dev ---> staging ---> prod" }
     end
 
     describe "#index with depth" do
@@ -64,28 +64,28 @@ describe Heroku::Command::Pipeline do
         heroku "pipeline -a dev -d 1"
       end
 
-      it { should include "dev ---> staging" }
+      it { expect "dev ---> staging" }
     end
 
     describe "#diff" do
       before do
-        stub_pipeline_request(:get, "staging", "diff").to_return(:body => Heroku::OkJson.encode(["COMMIT_A", "COMMIT_B"]))
+        stub_pipeline_request(:get, "staging", "diff").to_return(:body => MultiJson.dump(["COMMIT_A", "COMMIT_B"]))
         heroku "pipeline:diff -a staging"
       end
 
-      it { should include "Comparing staging to prod...done, staging ahead by 2 commits" }
-      it { should include "COMMIT_A" }
-      it { should include "COMMIT_B" }
+      it { expect "Comparing staging to prod...done, staging ahead by 2 commits" }
+      it { expect "COMMIT_A" }
+      it { expect "COMMIT_B" }
     end
 
     describe "#promote" do
       before do
         stub_pipeline_request(:post, "staging", "promote").to_return(:status => 202, :headers => { "Location" => "/v1/mocking" })
-        stub_request(:get,  v1 + "/mocking").to_return(:body => Heroku::OkJson.encode("release" => "v0"))
+        stub_request(:get,  v1 + "/mocking").to_return(:body => MultiJson.dump("release" => "v0"))
         heroku "pipeline:promote prod -a staging"
       end
 
-      it { should include "Promoting staging to prod....done, v0" }
+      it { expect "Promoting staging to prod....done, v0" }
     end
   end
 

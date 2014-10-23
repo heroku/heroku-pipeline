@@ -11,7 +11,7 @@ class Cisaurus
 
   def downstreams(app, depth=nil)
     handle_error do
-      Heroku::OkJson.decode RestClient.get pipeline_resource(app, "downstreams"), options(params :depth => depth)
+      MultiJson.load RestClient.get pipeline_resource(app, "downstreams"), options(params :depth => depth)
     end
   end
 
@@ -29,7 +29,7 @@ class Cisaurus
 
   def diff(app)
     handle_error do
-      Heroku::OkJson.decode RestClient.get pipeline_resource(app, "diff"), options
+      MultiJson.load RestClient.get pipeline_resource(app, "diff"), options
     end
   end
 
@@ -41,7 +41,7 @@ class Cisaurus
         sleep(interval)
         yield
       end
-      Heroku::OkJson.decode response
+      MultiJson.load response
     end
   end
 
@@ -67,7 +67,7 @@ class Cisaurus
     begin
       request.call
     rescue RestClient::Exception => e
-      body = Heroku::OkJson.decode e.response
+      body = MultiJson.load e.response
       if !body.nil? && (body.has_key? 'error')
         raise Heroku::Command::CommandFailed, body['error']
       else
