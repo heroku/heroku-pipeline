@@ -28,7 +28,7 @@ klasses.each do |klass|
   end
 end
 
-def output
+def command_output
   $command_output
 end
 
