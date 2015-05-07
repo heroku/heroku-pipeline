@@ -7,6 +7,12 @@ class Cisaurus
     protocol  = (host.start_with? "localhost") ? "http" : "https"
     @base_url = "#{protocol}://:#{api_key}@#{host}"
     @ver_url  = "#{@base_url}/#{api_version}"
+    RestClient.proxy = case protocol
+                       when "http"
+                         http_proxy
+                       when "https"
+                         https_proxy
+                       end
   end
 
   def downstreams(app, depth=nil)
@@ -76,4 +82,27 @@ class Cisaurus
     end
   end
 
+  def http_proxy
+    proxy = ENV['HTTP_PROXY'] || ENV['http_proxy']
+    if proxy && !proxy.empty?
+      unless /^[^:]+:\/\// =~ proxy
+        proxy = "http://" + proxy
+      end
+      proxy
+    else
+      nil
+    end
+  end
+
+  def https_proxy
+    proxy = ENV['HTTPS_PROXY'] || ENV['https_proxy']
+    if proxy && !proxy.empty?
+      unless /^[^:]+:\/\// =~ proxy
+        proxy = "https://" + proxy
+      end
+      proxy
+    else
+      nil
+    end
+  end
 end
