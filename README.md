@@ -2,7 +2,7 @@
 >
 >A [new accompanying Heroku CLI plug-in](https://github.com/heroku/heroku-pipelines) is available.  
 >
->Use of the older pipelines feature provided by the plugin below is no longer recommended. To de-install it enter `$heroku plugins:uninstall heroku-pipeline`
+>Use of the older pipelines feature provided by the plugin below is no longer recommended. To uninstall it enter `$heroku plugins:uninstall heroku-pipeline`
 
 heroku-pipeline
 ===============
