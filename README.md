@@ -1,3 +1,9 @@
+>**This older "pipelines" feature has been superceded by a [new Heroku Pipelines](https://devcenter.heroku.com/articles/heroku-labs-new-pipelines)**.
+>
+>A [new accompanying Heroku CLI plug-in](https://github.com/heroku/heroku-pipelines) is availble.  
+>
+>Use of the older pipelines feature provided by the plugin below is no longer recommended. To de-install it enter `$heroku plugins:uninstall heroku-pipeline`
+
 heroku-pipeline
 ===============
 An experimental Heroku CLI plugin for [continuous delivery](http://en.wikipedia.org/wiki/Continuous_delivery) on Heroku.
