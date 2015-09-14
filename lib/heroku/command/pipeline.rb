@@ -4,7 +4,7 @@ require 'heroku/api/config_vars'
 require 'rest_client'
 require 'net/http'
 
-# manage continuous delivery pipelines
+# DEPRECATED - manage continuous delivery pipelines
 #
 class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
 
@@ -17,7 +17,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
 
   # pipeline
   #
-  # display info about the app pipeline
+  # DEPRECATED - display info about the app pipeline
   #
   # -d, --depth DEPTH  # limit the pipeline to a given number of downstreams
   #
@@ -42,7 +42,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
 
   # pipeline:remove
   #
-  # remove the downstream app of this app
+  # DEPRECATED - remove the downstream app of this app
   #
   def remove
     deprecation_notice!
@@ -83,7 +83,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
 
   # pipeline:promote
   #
-  # promote the latest release of this app to its downstream app
+  # DEPRECATED - promote the latest release of this app to its downstream app
   #
   def promote
     deprecation_notice!
