@@ -30,7 +30,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
 
   # pipeline:add DOWNSTREAM_APP
   #
-  # add a downstream app to this app
+  # DEPRECATED - add a downstream app to this app
   #
   def add
     deprecation_notice!
@@ -54,7 +54,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
 
   # pipeline:diff
   #
-  # compare the commits of this app to its downstream app
+  # DEPRECATED - compare the commits of this app to its downstream app
   #
   def diff
     deprecation_notice!
