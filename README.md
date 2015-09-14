@@ -1,8 +1,8 @@
->**This older "pipelines" feature has been superceded by a [new Heroku Pipelines](https://devcenter.heroku.com/articles/heroku-labs-new-pipelines)**.
+>**This older "pipelines" feature has been superceded by the [new Heroku Pipelines](https://devcenter.heroku.com/articles/pipelines)**.
 >
 >A [new accompanying Heroku CLI plug-in](https://github.com/heroku/heroku-pipelines) is available.  
 >
->Use of the older pipelines feature provided by the plugin below is no longer recommended. To uninstall it enter `$heroku plugins:uninstall heroku-pipeline`
+>Use of the older pipelines feature provided by the plugin below is no longer recommended. To uninstall it enter `$heroku plugins:uninstall heroku-pipeline`. Please upgrade as soon as possible. This older feature will be disabled soon.
 
 heroku-pipeline
 ===============
