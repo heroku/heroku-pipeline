@@ -22,6 +22,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
   # -d, --depth DEPTH  # limit the pipeline to a given number of downstreams
   #
   def index
+    deprecation_notice!
     downstreams = @cisauraus.downstreams(app, options[:depth])
     verify_downstream! downstreams.first
     display "Pipeline: #{downstreams.unshift(app).join ' ---> '}"
@@ -32,6 +33,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
   # add a downstream app to this app
   #
   def add
+    deprecation_notice!
     downstream = shift_argument
     verify_downstream! downstream
     @cisauraus.addDownstream(app, downstream)
@@ -43,6 +45,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
   # remove the downstream app of this app
   #
   def remove
+    deprecation_notice!
     downstream = shift_argument
     verify_downstream! downstream
     @cisauraus.removeDownstream(app, downstream)
@@ -54,6 +57,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
   # compare the commits of this app to its downstream app
   #
   def diff
+    deprecation_notice!
     downstream = @cisauraus.downstreams(app, 1).first
     verify_downstream! downstream
 
@@ -82,6 +86,7 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
   # promote the latest release of this app to its downstream app
   #
   def promote
+    deprecation_notice!
     downstream = @cisauraus.downstreams(app, 1).first
     verify_downstream! downstream
     print_and_flush("Promoting #{app} to #{downstream}...")
@@ -90,6 +95,12 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
   end
 
   protected
+
+  def deprecation_notice!
+    display("WARNING: This older 'pipelines' feature has been superseded by a new Heroku Pipelines.\n" +
+            "         Please upgrade as soon as possible. This older feature will be disabled soon.\n" +
+            "         See: https://devcenter.heroku.com/articles/pipelines\n\n")
+  end
 
   def plural(word, qty)
     if (qty == 1)
