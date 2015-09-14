@@ -98,8 +98,8 @@ class Heroku::Command::Pipeline < Heroku::Command::BaseWithApp
 
   def deprecation_notice!
     display("WARNING: This older 'pipelines' feature has been superseded by a new Heroku Pipelines.\n" +
-            "         Please upgrade as soon as possible. This older feature will be disabled October 2015.\n" +
-            "         See: http://blog.heroku.com/archives/2015/9/3/heroku_flow_pipelines_review_apps_and_github_sync\n\n")
+            "         Please upgrade as soon as possible. This older feature will be disabled soon.\n" +
+            "         See: https://devcenter.heroku.com/articles/pipelines\n\n")
   end
 
   def plural(word, qty)
